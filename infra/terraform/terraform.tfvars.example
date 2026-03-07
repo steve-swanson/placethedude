@@ -1,0 +1,9 @@
+aws_region              = "us-east-1"
+project_name            = "placethedude"
+environment             = "prod"
+website_bucket_name     = "placethedude-prod-website"
+image_bucket_name       = "placethedude-prod-images"
+image_count             = 10
+cloudfront_aliases_json = "[\"placethedude.com\",\"www.placethedude.com\"]"
+acm_certificate_arn     = "arn:aws:acm:us-east-1:123456789012:certificate/replace-me"
+route53_zone_id         = "Z1234567890ABCDE"

@@ -1,0 +1,101 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    if: github.ref_name == 'main' || github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'stg' }}
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_IN_AUTOMATION: true
+      TF_VAR_project_name: ${{ vars.PROJECT_NAME }}
+      TF_VAR_environment: ${{ vars.ENVIRONMENT }}
+      TF_VAR_website_bucket_name: ${{ vars.WEBSITE_BUCKET_NAME }}
+      TF_VAR_image_bucket_name: ${{ vars.IMAGE_BUCKET_NAME }}
+      TF_VAR_image_count: ${{ vars.IMAGE_COUNT }}
+      TF_VAR_cloudfront_aliases_json: ${{ vars.CLOUDFRONT_ALIASES_JSON }}
+      TF_VAR_acm_certificate_arn: ${{ vars.ACM_CERTIFICATE_ARN }}
+      TF_VAR_route53_zone_id: ${{ vars.ROUTE53_ZONE_ID }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Prune dev dependencies
+        run: npm prune --omit=dev
+
+      - name: Package Lambda artifact
+        run: npm run package
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+
+      - name: Terraform init
+        working-directory: infra/terraform
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}" \
+            -backend-config="key=placethedude/${{ vars.ENVIRONMENT }}/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="use_lockfile=true" \
+            -backend-config="encrypt=true"
+
+      - name: Terraform apply
+        working-directory: infra/terraform
+        run: terraform apply -auto-approve
+
+      - name: Capture Terraform outputs
+        id: terraform
+        working-directory: infra/terraform
+        run: |
+          echo "website_bucket=$(terraform output -raw website_bucket_name)" >> "$GITHUB_OUTPUT"
+          echo "distribution_id=$(terraform output -raw cloudfront_distribution_id)" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy website assets
+        run: |
+          aws s3 sync apps/site/ "s3://${{ steps.terraform.outputs.website_bucket }}" \
+            --delete \
+            --exclude "index.html" \
+            --cache-control "public, max-age=31536000, immutable"
+
+          aws s3 cp apps/site/index.html "s3://${{ steps.terraform.outputs.website_bucket }}/index.html" \
+            --cache-control "public, max-age=0, must-revalidate" \
+            --content-type "text/html; charset=utf-8"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.terraform.outputs.distribution_id }}" \
+            --paths "/" "/index.html" "/assets/*" "/favicon.ico" "/robots.txt" "/icon-*"

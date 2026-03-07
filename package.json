@@ -1,0 +1,17 @@
+{
+  "name": "placethedude",
+  "version": "2.0.0",
+  "private": true,
+  "description": "The Dude placeholder image service on AWS Lambda",
+  "scripts": {
+    "test": "node --test apps/image-service/tests/handler.test.js",
+    "package": "node apps/image-service/scripts/package-lambda.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.540.0",
+    "sharp": "^0.33.5"
+  }
+}
