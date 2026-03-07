@@ -63,19 +63,29 @@ function getConfig() {
 async function getRandomSourceImage(config) {
   const imageNumber = crypto.randomInt(1, config.imageCount + 1);
   const key = buildImageKey(imageNumber);
-  const response = await s3.send(
-    new GetObjectCommand({
-      Bucket: config.imageBucket,
-      Key: key
-    })
-  );
+  let response;
+
+  try {
+    response = await s3.send(
+      new GetObjectCommand({
+        Bucket: config.imageBucket,
+        Key: key
+      })
+    );
+  } catch (error) {
+    error.selectedKey = key;
+    throw error;
+  }
 
   if (!response.Body) {
     throw new Error(`S3 object body missing for key ${key}.`);
   }
 
   const imageBytes = await response.Body.transformToByteArray();
-  return Buffer.from(imageBytes);
+  return {
+    key,
+    buffer: Buffer.from(imageBytes)
+  };
 }
 
 function textResponse(statusCode, body) {
@@ -116,7 +126,7 @@ exports.handler = async (event) => {
 
   try {
     const sourceImage = await getRandomSourceImage(config);
-    const outputImage = await sharp(sourceImage)
+    const outputImage = await sharp(sourceImage.buffer)
       .rotate()
       .resize(request.width, request.height, { fit: "cover", position: "centre" })
       .jpeg({ quality: config.jpegQuality, mozjpeg: true })
@@ -136,6 +146,7 @@ exports.handler = async (event) => {
     console.error("Failed to generate placeholder image", {
       message: error.message,
       stack: error.stack,
+      selectedKey: error.selectedKey,
       rawPath
     });
 
