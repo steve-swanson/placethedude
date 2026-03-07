@@ -289,6 +289,15 @@ resource "aws_lambda_permission" "cloudfront_function_url" {
   function_url_auth_type = "AWS_IAM"
 }
 
+resource "aws_lambda_permission" "cloudfront_function" {
+  statement_id             = "AllowCloudFrontInvokeFunction"
+  action                   = "lambda:InvokeFunction"
+  function_name            = aws_lambda_function.images.function_name
+  principal                = "cloudfront.amazonaws.com"
+  source_arn               = aws_cloudfront_distribution.site.arn
+  invoked_via_function_url = true
+}
+
 resource "aws_route53_record" "aliases" {
   count   = local.use_route53_alias ? length(local.cloudfront_aliases) : 0
   zone_id = var.route53_zone_id
