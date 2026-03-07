@@ -203,6 +203,7 @@ code {
 }
 
 .frame {
+  margin: 0;
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(33, 28, 24, 0.38);
@@ -275,7 +276,7 @@ code {
   }
 }
 
-@media (min-width: 981px) {
+@media (min-width: 1101px) {
   body {
     overflow: hidden;
   }
@@ -310,11 +311,20 @@ code {
   }
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
+  :root {
+    --image-gap: 18px;
+    --tall-width: 246px;
+    --tall-height: 338px;
+    --wide-width: 286px;
+    --top-height: 132px;
+    --bottom-height: 188px;
+  }
+
   .layout {
-    width: min(100% - 32px, 860px);
-    padding-top: 34px;
-    padding-bottom: 38px;
+    width: min(100% - 40px, 760px);
+    padding-top: 38px;
+    padding-bottom: 34px;
   }
 
   .hero {
@@ -322,103 +332,126 @@ code {
     margin-bottom: 28px;
   }
 
+  .hero h1 {
+    font-size: clamp(3.25rem, 8.2vw, 4.95rem);
+    white-space: nowrap;
+  }
+
+  .lede {
+    margin-top: 16px;
+    font-size: 1.06rem;
+  }
+
+  .endpoint-card {
+    margin-top: 20px;
+    padding: 16px 18px;
+  }
+
+  .endpoint-card code {
+    font-size: clamp(0.8rem, 1.65vw, 0.92rem);
+  }
+
   .mosaic {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto auto;
-    gap: 16px;
-    width: auto;
-    height: auto;
-  }
-
-  .mosaic-stack {
-    display: contents;
-  }
-
-  .frame {
-    width: 100%;
-    height: auto;
-  }
-
-  .frame-tall {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    aspect-ratio: 275 / 400;
-  }
-
-  .frame-top-wide {
-    grid-column: 2;
-    grid-row: 1;
-    aspect-ratio: 320 / 150;
-  }
-
-  .frame-bottom-wide {
-    grid-column: 2;
-    grid-row: 2;
-    aspect-ratio: 320 / 230;
+    margin: 0;
+    justify-content: start;
   }
 
   .site-footer {
-    margin-top: 22px;
+    margin-top: 20px;
   }
 }
 
 @media (max-width: 640px) {
+  :root {
+    --image-gap: 14px;
+    --tall-width: 178px;
+    --tall-height: 246px;
+    --wide-width: 198px;
+    --top-height: 92px;
+    --bottom-height: 140px;
+  }
+
   .layout {
-    width: min(100% - 24px, 100%);
-    padding-top: 28px;
-    padding-bottom: 34px;
+    width: min(100% - 24px, 430px);
+    padding-top: 30px;
+    padding-bottom: 28px;
   }
 
   .eyebrow {
-    white-space: normal;
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
   .hero h1 {
-    font-size: clamp(3.1rem, 18vw, 5.1rem);
-    white-space: normal;
-  }
-
-  .button {
-    width: 100%;
+    font-size: clamp(2.6rem, 11vw, 3.8rem);
+    white-space: nowrap;
+    letter-spacing: -0.04em;
   }
 
   .endpoint-card {
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 18px;
+    padding: 14px 16px;
   }
 
   .endpoint-card code {
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    font-size: 0.74rem;
   }
 
   .mosaic {
-    grid-template-columns: 1fr;
-  }
-
-  .frame-tall,
-  .frame-top-wide,
-  .frame-bottom-wide {
-    grid-column: auto;
-    grid-row: auto;
-    width: 100%;
-    max-width: none;
-    justify-self: stretch;
-  }
-
-  .frame-tall {
-    aspect-ratio: 275 / 400;
-  }
-
-  .frame-top-wide {
-    aspect-ratio: 320 / 150;
-  }
-
-  .frame-bottom-wide {
-    aspect-ratio: 320 / 230;
+    margin: 6px 0 0;
   }
 
   .site-footer {
-    flex-direction: column;
+    margin-top: 18px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    --image-gap: 10px;
+    --tall-width: 134px;
+    --tall-height: 190px;
+    --wide-width: 160px;
+    --top-height: 72px;
+    --bottom-height: 108px;
+  }
+
+  .layout {
+    width: min(100% - 20px, 320px);
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .eyebrow {
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .lede {
+    font-size: 0.94rem;
+  }
+
+  .endpoint-card {
+    margin-top: 16px;
+    padding: 12px 14px;
+  }
+
+  .endpoint-card__label {
+    margin-bottom: 8px;
+  }
+
+  .endpoint-card code {
+    font-size: 0.62rem;
   }
 }
 
