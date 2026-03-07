@@ -1,0 +1,115 @@
+body {
+    background: #fff;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    color: #333;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    display: block;
+    line-height: 1.57;
+}
+
+.container {
+    width: 824px;
+    margin: 40px auto;
+}
+
+header {
+    float: left;
+}
+
+header h1 {
+    margin: 0 0 36px 0;
+    color: #999;
+    font: normal normal 4em Baskerville, Palatino, "Book Antiqua", serif;
+}
+
+header h1 span {
+    color: darkslategray;
+}
+
+strong {
+    font-weight: bold;
+    color: #000;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+.intro {
+    font-size: 16px;
+    padding: 0 12px 0 12px;
+}
+
+.examples {
+    background-color: darkslategray;
+    height: 60px;
+}
+
+.examples span {
+    color: white;
+    padding-left: 8px;
+    vertical-align: middle;
+}
+
+.examples a {
+    /*color: aqua;*/
+    color: aqua;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+.examples a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.examples a:visited {
+    color: aqua;
+    text-decoration: none;
+}
+
+.sample0 {
+    float: left;
+}
+
+.sample1 {
+    margin: 0 8px 8px 0;
+    float: left;
+}
+
+.sample2 {
+    vertical-align: bottom;
+    margin: 0 0 8px 0;
+    float: left;
+}
+
+.sample3 {
+    vertical-align: bottom;
+    margin: 0 0 8px 0;
+    float: left;
+}
+
+.sample4 {
+    vertical-align: bottom;
+    margin: 0 0 8px 8px;
+    float: right;
+}
+
+.sample5 {
+    vertical-align: bottom;
+    margin: 0 0 8px 8px;
+    float: right
+}
+
+.sample6 {
+    vertical-align: bottom;
+    margin: 0 0 8px 0;
+    float: right;
+}
+
+.sample7 {
+    vertical-align: bottom;
+    margin: 0 0 8px 0;
+    float: right;
+}
