@@ -1,5 +1,7 @@
 # placethedude
 
+[![Deploy main](https://github.com/steve-swanson/placethedude/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/steve-swanson/placethedude/actions/workflows/deploy.yml?query=branch%3Amain)
+
 Node.js-powered placeholder image service for The Dude, deployed on AWS Lambda behind CloudFront.
 
 ## What changed
